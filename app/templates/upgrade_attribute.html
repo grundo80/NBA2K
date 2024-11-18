@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Upgrade Attributes/Badges{% endblock %}
+
+{% block content %}
+<main>
+    <h1>Upgrade Attributes/Badges</h1>
+    <!-- Upgrade form starts here -->
+    <form method="POST" id="upgradeForm" onsubmit="submitForm()">
+        <label for="player_id">Select Player:</label>
+        <select name="player_id" onchange="this.form.submit()">
+            <!-- Add a default placeholder option -->
+            <option value="" disabled selected>Select a Player</option>
+            {% for player_item in players %}
+            <option value="{{ player_item.id }}" {% if player and player_item.id == request.args.get('player_id') %}selected{% endif %}>
+                {{ player_item.name }}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        {% if player %}
+        <h3>{{ player.name }}'s Attributes</h3>
+        <p>Available Development Points: {{ player.devpoints }}</p>
+        <p>Available Badge Points: {{ player.badgepoints }}</p>
+        <button id="toggle-view" type="button" onclick="toggleView()">Show Attribute/Badge Targets</button>
+
+        <!-- Hidden field to keep player_id when upgrading attributes -->
+        <input type="hidden" name="player_id" value="{{ player.id }}">
+
+        <!-- Display Attributes -->
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Value</th>
+                <th class="expanded-view" style="display: none;">Delta</th>
+                <th class="expanded-view" style="display: none;">Target Value</th>
+                <th>Cost</th>
+                <th>Upgrade</th>
+            </tr>
+            {% for attr in attribute_list %}
+            <tr>
+                <td>{{ attr.replace("_", " ").title() }}</td>
+
+                <!-- Dynamically color the attribute value based on its range -->
+                <td>
+                    <span
+                        {% if player|getattr(attr) < 71 %}
+                            style="color:white;"
+                        {% elif player|getattr(attr) < 81 %}
+                            style="color:#B56459;"
+                        {% elif player|getattr(attr) < 91 %}
+                            style="color:#989898;"
+                        {% elif player|getattr(attr) < 96 %}
+                            style="color:#FDB527;"
+                        {% else %}
+                            style="color:#A555FB;"
+                        {% endif %}
+                    >
+                        {{ player|getattr(attr) }}
+                    </span>
+                </td>
+
+                <!-- Target Value and Delta for Expanded view -->
+                <td class="expanded-view" style="display: none;">
+                    {{ target_values.get(attr, 99) - player|getattr(attr) }}
+                </td>
+
+                <td class="expanded-view" style="display: none;">
+                    <span
+                        {% if target_values.get(attr, 99) < 71 %}
+                            style="color:white;"
+                        {% elif target_values.get(attr, 99) < 81 %}
+                            style="color:#B56459;"
+                        {% elif target_values.get(attr, 99) < 91 %}
+                            style="color:#989898;"
+                        {% elif target_values.get(attr, 99) < 96 %}
+                            style="color:#FDB527;"
+                        {% else %}
+                            style="color:#A555FB;"
+                        {% endif %}
+                    >
+                        {{ target_values.get(attr, 99) }}
+                    </span>
+                </td>
+
+                <!-- Upgrade cost -->
+                <td>
+                    {% if player|getattr(attr) < 71 %}
+                    1 devpoint
+                    {% elif player|getattr(attr) < 81 %}
+                    2 devpoints
+                    {% elif player|getattr(attr) < 91 %}
+                    3 devpoints
+                    {% else %}
+                    5 devpoints
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if player|getattr(attr) < 99 %}
+                        <button type="submit" name="attribute" value="{{ attr }}">Upgrade</button>
+                    {% else %}
+                        <p></p>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Display Badge Upgrades -->
+        <h3>{{ player.name }}'s Badges</h3>
+        <table>
+            <tr>
+                <th>Badge</th>
+                <th>Level</th>
+                <th class="expanded-view" style="display: none;">Delta</th>
+                <th class="expanded-view" style="display: none;">Target Level</th>
+                <th>Upgrade Cost (DevPoints)</th>
+                <th>Upgrade with</th>
+            </tr>
+            {% for badge in badge_list %}
+            <tr>
+                <td>{{ badge.replace("_", " ").title() }}</td>
+
+                <!-- Dynamically colour the badge value based on the level-->
+                <td>
+                    <span
+                        {% if player|getattr(badge) == "None" %}
+                            style="color:white;"
+                        {% elif player|getattr(badge) == "Bronze" %}
+                            style="color:#B56459;"
+                        {% elif player|getattr(badge) == "Silver" %}
+                            style="color:#989898;"
+                        {% elif player|getattr(badge) == "Gold" %}
+                            style="color:#FDB527;"
+                        {% elif target_badges.get(badge) == "Hall of Fame" %}
+                            style="color:#A555FB;"
+                        {% else %}
+                            style="color: #FF2938;"
+                        {% endif %}
+                    >
+                        {{ player|getattr(badge) }}
+                    </span>
+                </td>
+                <!-- Target Level and Delta for expanded view -->
+                <td class="expanded-view" style="display: none;">
+                    {{ badge_levels.index(target_badges.get(badge, "Legendary")) - badge_levels.index(player|getattr(badge)) }}
+                </td>
+                <td class="expanded-view" style="display: none;">
+                    <span
+                        {% if target_badges.get(badge) == "None" %}
+                            style="color:white;"
+                        {% elif target_badges.get(badge) == "Bronze" %}
+                            style="color:#B56459;"
+                        {% elif target_badges.get(badge) == "Silver" %}
+                            style="color:#989898;"
+                        {% elif target_badges.get(badge) == "Gold" %}
+                            style="color:#FDB527;"
+                        {% elif target_badges.get(badge) == "Hall of Fame" %}
+                            style="color:#A555FB;"
+                        {% else %}
+                            style="color: #FF2938;"
+                        {% endif %}
+                    >
+                        {{ target_badges.get(badge, "Legendary") }}
+                    </span>
+                </td>
+                <td>
+                    {% if player|getattr(badge) == "None" %}
+                    3 devpoints
+                    {% elif player|getattr(badge) == "Bronze" %}
+                    5 devpoints
+                    {% elif player|getattr(badge) == "Silver" %}
+                    7 devpoints
+                    {% elif player|getattr(badge) == "Gold" %}
+                    10 devpoints
+                    {% elif player|getattr(badge) == "Hall of Fame" %}
+                    20 devpoints
+                    {% endif %}
+                </td>
+                <td>
+                    {% if player|getattr(badge) != "Legendary" %}
+                        <button type="submit" name="badge_devpoints" value="{{ badge }}">DevPoints</button>
+                        <button type="submit" name="badge_badgepoints" value="{{ badge }}">Badge Points</button>
+                    {% else %}
+                        <p></p>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% else %}
+        <p>Please select a player to view their attributes.</p>
+        {% endif %}
+    </form>
+
+    <!-- Legend for Costs -->
+    <h4>Upgrade Cost Legend</h4>
+    <p><span style="color:white"> Below 71: 1 devpoint</span></p>
+    <p><span style="color:#B56459;"> 71-80: 2 devpoints</span></p>
+    <p><span style="color:#989898;"> 81-90: 3 devpoints</span></p>
+    <p><span style="color:#FDB527;"> 91-95: 5 devpoints</span></p>
+    <p><span style="color:#A555FB;"> Above 95: 5 devpoints</span></p>
+
+    {% if player %}
+    <form action="{{ url_for('delete_player', player_id=player.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this player? This action cannot be undone.')">
+        <button type="submit" class="btn-danger">Delete Player</button>
+    </form>
+    {% else %}
+    <p>No player selected.</p>
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}" class="button">Back to Dashboard</a>
+</main>
+
+<!-- Scripts to handle scroll position and expanded view state -->
+<script>
+function toggleView() {
+    let elements = document.querySelectorAll(".expanded-view");
+    let isExpanded = localStorage.getItem('isExpanded') === 'true'; // get current state
+
+    elements.forEach(function(element) {
+        if (isExpanded) {
+            element.style.display = "none";
+        } else {
+            element.style.display = "table-cell";
+        }
+    });
+
+    // Toggle the state
+    isExpanded = !isExpanded;
+    localStorage.setItem('isExpanded', isExpanded);
+
+    // Update button text
+    var toggleButton = document.getElementById('toggle-view');
+    if (isExpanded) {
+        toggleButton.textContent = 'Hide Attribute/Badge Targets';
+    } else {
+        toggleButton.textContent = 'Show Attribute/Badge Targets';
+    }
+}
+
+function submitForm() {
+    // Store scroll position
+    var scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+    localStorage.setItem('scrollPos', scrollPos);
+    // The form will submit automatically upon button click
+}
+
+window.onload = function() {
+    var scrollPos = localStorage.getItem('scrollPos');
+    if (scrollPos) {
+        window.scrollTo(0, scrollPos);
+        localStorage.removeItem('scrollPos');
+    }
+
+    // Restore the expanded view state
+    var isExpanded = localStorage.getItem('isExpanded') === 'true';
+    let elements = document.querySelectorAll(".expanded-view");
+    elements.forEach(function(element) {
+        if (isExpanded) {
+            element.style.display = "table-cell";
+        } else {
+            element.style.display = "none";
+        }
+    });
+
+    // Update button text
+    var toggleButton = document.getElementById('toggle-view');
+    if (isExpanded) {
+        toggleButton.textContent = 'Hide Attribute/Badge Targets';
+    } else {
+        toggleButton.textContent = 'Show Attribute/Badge Targets';
+    }
+}
+</script>
+{% endblock %}

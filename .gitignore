@@ -1,0 +1,15 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+
+# Database files
+*.db
+
+# Migrations
+migrations/
+
+# Tokens or sensitive files
+token.json

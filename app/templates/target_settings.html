@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Target Settings{% endblock %}
+
+{% block content %}
+<main>
+    <h2>Set Target Values for Player Attributes and Badges</h2>
+
+    <!-- Player selection form -->
+    <form method="POST" action="{{ url_for('target_settings') }}">
+        <label for="player_id">Select Player:</label>
+        <select name="player_id" id="player_id" onchange="this.form.submit()">
+            <option value="" disabled {% if not selected_player %}selected{% endif %}>Select a Player</option>
+            {% for player in players %}
+            <option value="{{ player.id }}" {% if selected_player and player.id == selected_player.id %}selected{% endif %}>
+                {{ player.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <!-- For to crape player data (fetching from 2Kratings) -->
+    {% if selected_player %}
+    <form id="scrape-form" method="POST" action="{{ url_for('target_settings') }}">
+        <label for="player_url_part">Enter Player URL Part from 2Kratings:</label>
+        <div class="input-with-info">
+            <input type="text" id="player_url_part" name="player_url_part" placeholder="lebron-james">
+            <span class="info-icon" tabindex="0">ℹ️</span>
+            <div class="tooltip">
+                This is the part that comes after www.2kratings.com when looking at the player screen.
+                For example, for LeBron James, this would be "lebron-james".
+            </div>
+        </div>
+        <input type="hidden" name="player_id" value="{{ selected_player.id }}">
+        <button type="submit" class="button" name="scrape_player" value="Scrape">Fetch Player Data</button>
+    </form>
+
+    <!-- Form for setting player target attributes and values -->
+    <h3>Target Values for {{ selected_player.name }}</h3>
+
+    <!-- Attribute inputs -->
+    <h4>Attributes</h4>
+    <form method="POST" action="{{ url_for('target_settings') }}">
+        <input type="hidden" name="player_id" value="{{ selected_player.id }}">
+        {% for attr in attribute_list %}
+        <label for="{{ attr }}">{{ attr.replace("_", " ").title() }}:</label>
+        <input type="number" name="target_{{ attr }}" id="{{ attr }}" min="25" max="99" value="{{ target_values.get(attr, 99) }}"><br>
+        {% endfor %}
+
+        <!-- Badge Inputs -->
+        <h4>Badges</h4>
+        {% for badge in badge_list %}
+        <label for="{{ badge }}">{{ badge.replace('_', ' ').title() }}:</label>
+            <select name="target_{{ badge }}" id="{{ badge }}">
+                <option value="None" {% if target_badges.get(badge, "Legendary") == 'None' %}selected{% endif %}>None</option>
+                <option value="Bronze" {% if target_badges.get(badge, "Legendary") == 'Bronze' %}selected{% endif %}>Bronze</option>
+                <option value="Silver" {% if target_badges.get(badge, "Legendary") == 'Silver' %}selected{% endif %}>Silver</option>
+                <option value="Gold" {% if target_badges.get(badge, "Legendary") == 'Gold' %}selected{% endif %}>Gold</option>
+                <option value="Hall of Fame" {% if target_badges.get(badge, "Legendary") == 'Hall of Fame' %}selected{% endif %}>Hall of Fame</option>
+                <option value="Legendary" {% if target_badges.get(badge, "Legendary") == 'Legendary' %}selected{% endif %}>Legendary</option>
+            </select><br>
+        {% endfor %}
+        <button type="submit" name="save_targets" value="Save">Save Targets</button>
+    </form>
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}" class="button">Back to Dashboard</a>
+</main>
+{% endblock %}
