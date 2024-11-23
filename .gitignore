@@ -8,8 +8,8 @@ __pycache__/
 # Database files
 *.db
 
-# Migrations
-migrations/
+# Instance folder
+instance/
 
 # Tokens or sensitive files
 token.json
