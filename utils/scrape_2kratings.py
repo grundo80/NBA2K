@@ -41,21 +41,40 @@ def scrape_player_data(player_url_part):
         attribute_elements = soup.find_all("li", class_="mb-1")
 
         for attr in attribute_elements:
-            attribute_name = "_".join(attr.text.strip().split("\n")[0].split(" ")[1:]).lower()
-            attribute_name = attribute_name.replace("-", "_")
-            attribute_value = int(attr.find("span", class_="attribute-box").text.strip())
+            raw_attribute_text = attr.text.strip()
+            raw_attribute_name = "_".join(raw_attribute_text.split("\n")[0].split(" ")[1:]).lower()
+            
+            # Check if the attribute name contains a number at the start
+            if any(char.isdigit() for char in raw_attribute_name):
+                parts = raw_attribute_name.split("_", 1)
+                if len(parts) > 1:
+                    clean_attribute_name = parts[1]
+                else:
+                    clean_attribute_name = raw_attribute_name
+            else:
+                clean_attribute_name = raw_attribute_name
 
-            if attribute_name.startswith("interior_defense"):
-                attribute_name = "interior_defense"
-            attributes[attribute_name] = attribute_value
+            clean_attribute_name = clean_attribute_name.replace("-", "_")
 
-        # Specific extraction for "Intangibles" using XPath
+            try:
+                attribute_value = int(attr.find("span", class_="attribute-box").text.strip())
+            except AttributeError:
+                continue
+
+            if clean_attribute_name.startswith("interior_defense"):
+                clean_attribute_name = "interior_defense"
+
+            attributes[clean_attribute_name] = attribute_value
+
         try:
-            intangibles_value = tree.xpath('/html/body/div[1]/div/div[2]/div[3]/main/div/div[7]/div[1]/div/div[2]/div[1]/div/div/h4/span/span/text()')
-            if intangibles_value:
-                attributes["intangibles"] = int(intangibles_value[0].strip())
+            intangibles_label = soup.find(lambda tag: tag.name == "h4" and "Intangibles" in tag.text)
+            if intangibles_label:
+                intangibles_value = int(intangibles_label.find_next("span", class_="attribute-box medium").text.strip())
+                attributes["intangibles"] = intangibles_value
+            else:
+                print("Intangibles label not found.")
         except Exception as e:
-            print(f"Error extracting Intangibles: {e}")
+            print(f"Error extracting intangibles: {e}")
 
         # Extract badges
         badges = {}
