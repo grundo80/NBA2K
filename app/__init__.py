@@ -38,3 +38,6 @@ def getattr_filter(obj, attr):
     Defining the custom getattr filter.
     """
     return getattr(obj, attr, None)
+
+from app.errors.handlers import errors
+app.register_blueprint(errors)

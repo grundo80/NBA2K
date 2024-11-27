@@ -13,3 +13,5 @@ instance/
 
 # Tokens or sensitive files
 token.json
+
+venv/
