@@ -9,6 +9,11 @@ from email.mime.text import MIMEText
 from itsdangerous import URLSafeTimedSerializer
 from flask import url_for
 
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 def get_gmail_service():
@@ -16,6 +21,7 @@ def get_gmail_service():
     Authenticate and return Gmail API service.
     """
     creds = None
+    print("Using client_id:", os.environ.get("GOOGLE_CLIENT_ID"))
     # Check if token.json exists
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -27,9 +33,9 @@ def get_gmail_service():
         else:
             flow = InstalledAppFlow.from_client_config({
                 "installed": {
-                    "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-                    "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-                    "redirect_uris": ["http://127.0.0.1:5000/login/callback"],
+                    "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+                    "client_secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
+                    "redirect_uris": [os.environ.get("GOOGLE_REDIRECT_URI")],
                     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                     "token_uri": "https://oauth2.googleapis.com/token"
                 }
@@ -72,16 +78,16 @@ def generate_confirmation_token(email):
     """
     Generating a confirmation token.
     """
-    serializer = URLSafeTimedSerializer(os.environ.get["SECRET_KEY"])
-    return serializer.dumps(email, salt=os.environ.get["SECURITY_PASSWORD_SALT"])
+    serializer = URLSafeTimedSerializer(os.environ.get("SECRET_KEY"))
+    return serializer.dumps(email, salt=os.environ.get("SECURITY_PASSWORD_SALT"))
 
 def confirm_token(token, expiration=3600):
     """
     Confirming the token.
     """
-    serializer = URLSafeTimedSerializer(os.environ.get["SECRET_KEY"])
+    serializer = URLSafeTimedSerializer(os.environ.get("SECRET_KEY"))
     try:
-        email = serializer.loads(token, salt=os.environ.get["SECURITY_PASSWORD_SALT"], max_age=expiration)
+        email = serializer.loads(token, salt=os.environ.get("SECURITY_PASSWORD_SALT"), max_age=expiration)
     except:
         return False
     return email
