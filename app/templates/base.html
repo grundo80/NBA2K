@@ -3,10 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="{% block meta_description %}This is the NBA 2K25 Player Progression Tracker for MyNBA.{% endblock %}">
         <title>{% block title %}NBA 2K25{% endblock %}</title>
         <!-- Link the external stylesheet -->
         <link rel="stylesheet" href="../../static/lite-yt-embed.css">
         <link rel="stylesheet" href="../../static/styles.css">
+        <!-- Preconnect for YouTube -->
+        <link rel="preconnect" href="https://www.youtube.com">
+        <link rel="preconnect" href="https://www.google.com">
+        <link rel="preconnect" href="https://i.ytimg.com">
+        <link rel="preconnect" href="https://www.gstatic.com">
+        <link rel="preload" as="image" href="../../static/images/nba.webp" type="image/webp" />
     </head>
     <body>
         <script src="../../static/lite-yt-embed.js" defer></script>
