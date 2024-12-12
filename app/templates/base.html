@@ -5,9 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}NBA 2K25{% endblock %}</title>
         <!-- Link the external stylesheet -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link rel="stylesheet" href="../../static/lite-yt-embed.css">
+        <link rel="stylesheet" href="../../static/styles.css">
     </head>
     <body>
+        <script src="../../static/lite-yt-embed.js" defer></script>
         <!-- Navigation bar -->
         <nav class="navbar">
             <input type="checkbox" id="nav-toggle" class="nav-toggle">
