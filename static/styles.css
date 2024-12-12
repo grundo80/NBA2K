@@ -3,7 +3,7 @@ a {
 }
 
 body {
-    background-image: url("images/court.jpg");
+    background-image: url("images/court.webp");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -111,7 +111,7 @@ table th, table td {
 /* Hero Section */
 .hero {
     position: relative;
-    background-image: url("images/nba.jpg");
+    background-image: url("images/nba.webp");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
