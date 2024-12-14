@@ -1,7 +1,8 @@
 import os
 import base64
+import json
+
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -18,7 +19,8 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 def get_gmail_service():
     """
-    Authenticate and return Gmail API service.
+    Authenticate and return Gmail API service using tokens from token.json.
+    If token.json does not exist or is invalid, print an error message.
     """
     creds = None
     print("Using client_id:", os.environ.get("GOOGLE_CLIENT_ID"))
@@ -26,26 +28,22 @@ def get_gmail_service():
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
 
-    # If there are no valid credentials, initiate the OAuth flow
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+    # If creds don't exist or are invalid
+    if not creds:
+        print("No valid credentials found. Please authorise the app by visiting /login/google in the browser")
+        return None
+    
+    # Refresh the token if it is expired and refresh_token is unavailable
+    if creds.expired and creds.refresh_token:
+        try:
             creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_config({
-                "installed": {
-                    "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
-                    "client_secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
-                    "redirect_uris": [os.environ.get("GOOGLE_REDIRECT_URI")],
-                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                    "token_uri": "https://oauth2.googleapis.com/token"
-                }
-            }, SCOPES)
-            creds = flow.run_local_server(port=5000)
-
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-
+            #Update token.json with the new refreshed token
+            with open("token.json", "w") as token_file:
+                token_file.write(creds.to_json())
+        except Exception as e:
+            print(f"Failed to refresh token: {e}")
+            return None
+        
     service = build("gmail", "v1", credentials=creds)
     return service
 
@@ -53,11 +51,15 @@ def send_email(user_id, recipient, subject, message_text):
     """
     Send an email using the Gmail API.
     """
+    service = get_gmail_service()
+    if not service:
+        print("Gmail service not available. Please authorise the app first.")
+        return None
+    
     try:
-        service = get_gmail_service()
         message = create_message(user_id, recipient, subject, message_text)
         message = service.users().messages().send(userId=user_id, body=message).execute()
-        print(f'Message Id: {message["id"]}')
+        print(f"Message Id: {message["id"]}")
         return message
     except HttpError as error:
         print(f"An error occurred: {error}")

@@ -3,6 +3,7 @@ We define the routes for registration and login.
 """
 
 import random
+import json
 import string
 import requests
 
@@ -11,6 +12,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from authlib.integrations.flask_client import OAuth
 from werkzeug.security import generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
+from google.oauth2.credentials import Credentials
 
 from app import app, db, bcrypt, mail
 from app.models import User, Player, UserSettings, PlayerTargets
@@ -30,7 +32,7 @@ google = oauth.register(
     access_token_url="https://accounts.google.com/o/oauth2/token",
     access_token_params=None,
     jwks_uri="https://www.googleapis.com/oauth2/v3/certs",
-    authorize_redirect_uri="http://127.0.0.1:5000/login/callback",
+    authorize_redirect_uri="https://www.nba2kpt.com/login/callback",
     redirect_uri=app.config["GOOGLE_REDIRECT_URI"],
     client_kwargs={"scope": "openid email profile"}
 )
@@ -655,6 +657,21 @@ def google_authorize():
     user_info = google.parse_id_token(token, nonce=nonce)
     user_email = user_info["email"]
     name = user_info.get("name", "")
+
+    # Create Credentials object from the token dictionary
+    creds = Credentials(
+        token=token["access_token"],
+        refresh_token=token.get("refresh_token"),
+        token_uri="https://oauth2.googleapis.com/token",
+        client_id=app.config["GOOGLE_CLIENT_ID"],
+        client_secret=app.config["GOOGLE_CLIENT_SECRET"],
+        scopes=["https://www.googleapis.com/auth/gmail.send"]
+    )
+
+    # Store the token so we can later access Gmail with it
+    # Make sure token.json is in a secure location and not in version control
+    with open("token.json", "w") as token_file:
+        token_file.write(creds.to_json())
 
     # Check if user already exists in the database
     user = User.query.filter_by(email=user_email).first()
