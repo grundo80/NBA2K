@@ -1,8 +1,8 @@
-"""Initial migration
+"""Initial schema
 
-Revision ID: 82c11998431a
+Revision ID: 6112af2b1878
 Revises: 
-Create Date: 2024-10-19 16:47:20.959148
+Create Date: 2024-12-14 12:59:46.290813
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '82c11998431a'
+revision = '6112af2b1878'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,6 +37,7 @@ def upgrade():
     sa.Column('agility', sa.Integer(), nullable=True),
     sa.Column('ball_handle', sa.Integer(), nullable=True),
     sa.Column('block', sa.Integer(), nullable=True),
+    sa.Column('close_shot', sa.Integer(), nullable=True),
     sa.Column('defensive_consistency', sa.Integer(), nullable=True),
     sa.Column('defensive_rebound', sa.Integer(), nullable=True),
     sa.Column('draw_foul', sa.Integer(), nullable=True),
@@ -122,6 +123,7 @@ def upgrade():
     sa.Column('points_40', sa.Integer(), nullable=True),
     sa.Column('points_30', sa.Integer(), nullable=True),
     sa.Column('points_20', sa.Integer(), nullable=True),
+    sa.Column('points_10', sa.Integer(), nullable=True),
     sa.Column('rebounds_20', sa.Integer(), nullable=True),
     sa.Column('rebounds_10', sa.Integer(), nullable=True),
     sa.Column('assists_20', sa.Integer(), nullable=True),
@@ -147,7 +149,7 @@ def upgrade():
     sa.Column('mvp_badge', sa.Integer(), nullable=True),
     sa.Column('champion_points', sa.Integer(), nullable=True),
     sa.Column('champion_badge', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('player_targets',
@@ -156,6 +158,7 @@ def upgrade():
     sa.Column('agility', sa.Integer(), nullable=True),
     sa.Column('ball_handle', sa.Integer(), nullable=True),
     sa.Column('block', sa.Integer(), nullable=True),
+    sa.Column('close_shot', sa.Integer(), nullable=True),
     sa.Column('defensive_consistency', sa.Integer(), nullable=True),
     sa.Column('defensive_rebound', sa.Integer(), nullable=True),
     sa.Column('draw_foul', sa.Integer(), nullable=True),
