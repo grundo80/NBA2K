@@ -649,7 +649,7 @@ def google_login():
         redirect_uri,
         nonce=nonce,
         access_type="offline",
-        promp="consent",
+        prompt="consent",
         )
 
 @app.route("/login/callback")
