@@ -20,17 +20,21 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 def get_gmail_service():
     """
     Authenticate and return Gmail API service using tokens from token.json.
-    If token.json does not exist or is invalid, print an error message.
+    This assumes that token.json has already been created via an offline 
+    authorization process (InstalledAppFlow) on another machine.
     """
     creds = None
     print("Using client_id:", os.environ.get("GOOGLE_CLIENT_ID"))
     # Check if token.json exists
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-
+    else:
+        print("No token.json found. Please place a valid token.json with gmail.send credentials.")
+        return None
+    
     # If creds don't exist or are invalid
     if not creds:
-        print("No valid credentials found. Please authorise the app by visiting /login/google in the browser")
+        print("Invalid credentials found in token.json. Please re-authorize offline and update token.json.")
         return None
     
     # Refresh the token if it is expired and refresh_token is unavailable
@@ -53,7 +57,7 @@ def send_email(user_id, recipient, subject, message_text):
     """
     service = get_gmail_service()
     if not service:
-        print("Gmail service not available. Please authorise the app first.")
+        print("Gmail service not available. Check token.json and ensure valid credentials exist.")
         return None
     
     try:
