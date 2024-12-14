@@ -28,12 +28,8 @@ google = oauth.register(
     client_id=app.config["GOOGLE_CLIENT_ID"],
     client_secret=app.config["GOOGLE_CLIENT_SECRET"],
     authorize_url="https://accounts.google.com/o/oauth2/auth",
-    authorize_params=None,
     access_token_url="https://accounts.google.com/o/oauth2/token",
-    access_token_params=None,
     jwks_uri="https://www.googleapis.com/oauth2/v3/certs",
-    authorize_redirect_uri="https://www.nba2kpt.com/login/callback",
-    redirect_uri=app.config["GOOGLE_REDIRECT_URI"],
     client_kwargs={"scope": "openid email profile"}
 )
 
@@ -640,43 +636,26 @@ def home():
 @app.route("/login/google")
 def google_login():
     """
-    This is the Google login screen.
+    Initiates Google login. This route is for user authentication only.
+    No offline access or gmail.send scope here.
     """
     nonce = "".join(random.choices(string.ascii_letters + string.digits, k=16))
     session["nonce"] = nonce
     redirect_uri = app.config["GOOGLE_REDIRECT_URI"]
-    return google.authorize_redirect(
-        redirect_uri,
-        nonce=nonce,
-        access_type="offline",
-        promp="consent",
-        )
+    return google.authorize_redirect(redirect_uri, nonce=nonce)
 
 @app.route("/login/callback")
 def google_authorize():
     """
-    Handling the Google authorisation.
+    Handling the Google authorisation callback for user login.
+    Note: We do NOT request gmail.send scope or store token.json here.
+    This is strictly for authenticating the user.
     """
     token = google.authorize_access_token()
     nonce = session.get("nonce")
     user_info = google.parse_id_token(token, nonce=nonce)
     user_email = user_info["email"]
     name = user_info.get("name", "")
-
-    # Create Credentials object from the token dictionary
-    creds = Credentials(
-        token=token["access_token"],
-        refresh_token=token.get("refresh_token"),
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=app.config["GOOGLE_CLIENT_ID"],
-        client_secret=app.config["GOOGLE_CLIENT_SECRET"],
-        scopes=["https://www.googleapis.com/auth/gmail.send"]
-    )
-
-    # Store the token so we can later access Gmail with it
-    # Make sure token.json is in a secure location and not in version control
-    with open("token.json", "w") as token_file:
-        token_file.write(creds.to_json())
 
     # Check if user already exists in the database
     user = User.query.filter_by(email=user_email).first()
