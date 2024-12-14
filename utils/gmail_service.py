@@ -59,7 +59,7 @@ def send_email(user_id, recipient, subject, message_text):
     try:
         message = create_message(user_id, recipient, subject, message_text)
         message = service.users().messages().send(userId=user_id, body=message).execute()
-        print(f"Message Id: {message["id"]}")
+        print(f"Message Id: {message['id']}")
         return message
     except HttpError as error:
         print(f"An error occurred: {error}")
