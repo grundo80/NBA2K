@@ -801,6 +801,8 @@ def delete_account():
     user = User.query.get(current_user.id)
 
     if user:
+        if user.settings:
+            db.session.delete(user.settings)
         # Delete the user from the database
         db.session.delete(user)
         db.session.commit()

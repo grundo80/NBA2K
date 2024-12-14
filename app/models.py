@@ -18,7 +18,12 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150), nullable=True)
     is_active = db.Column(db.Boolean, default=False)
     players = db.relationship("Player", back_populates="user", cascade="all, delete-orphan")
-    settings = db.relationship("UserSettings", uselist=False, back_populates="user")
+    settings = db.relationship(
+        "UserSettings", 
+        uselist=False, 
+        back_populates="user",
+        cascade="all, delete-orphan",
+        )
 
 
 class Player(db.Model):
@@ -129,7 +134,11 @@ class UserSettings(db.Model):
     Defining the user settings.
     """
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False
+        )
 
     # Customizable point and badge values
     rebounds_points_10 = db.Column(db.Integer, default=1)
