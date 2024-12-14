@@ -645,7 +645,12 @@ def google_login():
     nonce = "".join(random.choices(string.ascii_letters + string.digits, k=16))
     session["nonce"] = nonce
     redirect_uri = app.config["GOOGLE_REDIRECT_URI"]
-    return google.authorize_redirect(redirect_uri, nonce=nonce)
+    return google.authorize_redirect(
+        redirect_uri,
+        nonce=nonce,
+        access_type="offline",
+        promp="consent",
+        )
 
 @app.route("/login/callback")
 def google_authorize():
