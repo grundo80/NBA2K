@@ -507,11 +507,11 @@ def upgrade_attribute():
                     return redirect(url_for("upgrade_attribute", player_id=player_id))
 
                 # Define upgrade cost based on the current value
-                if current_value < 71:
+                if current_value < 70:
                     cost = 1
-                elif current_value < 81:
+                elif current_value < 80:
                     cost = 2
-                elif current_value < 91:
+                elif current_value < 90:
                     cost = 3
                 else:
                     cost = 5
