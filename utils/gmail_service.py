@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+email_client_id = os.environ.get("EMAIL_CLIENT_ID")
 
 def get_gmail_service():
     """
@@ -24,7 +25,7 @@ def get_gmail_service():
     authorization process (InstalledAppFlow) on another machine.
     """
     creds = None
-    print("Using client_id:", os.environ.get("GOOGLE_CLIENT_ID"))
+    print("Using Gmail Project A client_id:", email_client_id)
     # Check if token.json exists
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)

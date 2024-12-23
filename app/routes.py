@@ -25,8 +25,8 @@ oauth = OAuth(app)
 # Register Google OAuth
 google = oauth.register(
     name="google",
-    client_id=app.config["GOOGLE_CLIENT_ID"],
-    client_secret=app.config["GOOGLE_CLIENT_SECRET"],
+    client_id=app.config["LOGIN_CLIENT_ID"],
+    client_secret=app.config["LOGIN_CLIENT_SECRET"],
     authorize_url="https://accounts.google.com/o/oauth2/auth",
     access_token_url="https://accounts.google.com/o/oauth2/token",
     jwks_uri="https://www.googleapis.com/oauth2/v3/certs",
@@ -641,7 +641,7 @@ def google_login():
     """
     nonce = "".join(random.choices(string.ascii_letters + string.digits, k=16))
     session["nonce"] = nonce
-    redirect_uri = app.config["GOOGLE_REDIRECT_URI"]
+    redirect_uri = app.config["LOGIN_REDIRECT_URI"]
     return google.authorize_redirect(redirect_uri, nonce=nonce)
 
 @app.route("/login/callback")

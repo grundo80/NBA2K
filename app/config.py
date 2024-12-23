@@ -18,11 +18,15 @@ class Config:
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
     SQLALCHEMY_DATABASE_URI = "sqlite:///nba2k25.db"
 
-    # Google OAuth configuration
-    GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
-    GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
-    GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
-    GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
+    # Login (Project B) environment variables
+    LOGIN_CLIENT_ID = os.environ.get('LOGIN_CLIENT_ID')
+    LOGIN_CLIENT_SECRET = os.environ.get('LOGIN_CLIENT_SECRET')
+    LOGIN_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+    LOGIN_REDIRECT_URI = os.environ.get('LOGIN_REDIRECT_URI')
+    
+    # Optionally, for Gmail sending (Project A) if you'd like to store them here:
+    EMAIL_CLIENT_ID = os.environ.get('EMAIL_CLIENT_ID')
+    EMAIL_CLIENT_SECRET = os.environ.get('EMAIL_CLIENT_SECRET')
 
     # Flask-Mail configuration
     MAIL_SERVER = 'smtp.gmail.com'
