@@ -58,7 +58,7 @@ def confirm_token(token, expiration=3600):
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """
-    This is the logic for customer registering themselves.
+    This is the logic for users registering themselves.
     """
     if request.method == "POST":
         username = request.form.get("username")
@@ -85,21 +85,21 @@ def register():
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
         #Create new user
-        user = User(username=username, email=email, password=hashed_password)
+        user = User(username=username, email=email, password=hashed_password, is_active=True)
         db.session.add(user)
         db.session.commit()
 
-        # Generate the confirmation token
-        token = generate_confirmation_token(email)
-        confirm_url = url_for("confirm_email", token=token, _external=True)
+        # # Generate the confirmation token
+        # token = generate_confirmation_token(email)
+        # confirm_url = url_for("confirm_email", token=token, _external=True)
 
-        # Email content with the confirmation link
-        email_body = f"Please click the link to confirm your email: {confirm_url}"
+        # # Email content with the confirmation link
+        # email_body = f"Please click the link to confirm your email: {confirm_url}"
 
-        # Send the confimation email
-        send_email("me", email, "Confirm your e-mail", email_body)
+        # # Send the confimation email
+        # send_email("me", email, "Confirm your e-mail", email_body)
 
-        flash("A confirmation email has been sent. Please confirm your email to log in.", "info")
+        flash("Registration successful! You can now log in.", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 
