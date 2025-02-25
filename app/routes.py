@@ -217,6 +217,7 @@ def add_player():
         post_up_poet = request.form.get("post_up_poet", "None")
         physical_finisher = request.form.get("physical_finisher", "None")
         rebound_chaser = request.form.get("rebound_chaser", "None")
+        rise_up = request.form.get("rise_up", "None")
         set_shot_specialist = request.form.get("set_shot_specialist", "None")
         shifty_shooter = request.form.get("shifty_shooter", "None")
         slippery_off_ball = request.form.get("slippery_off_ball", "None")
@@ -298,6 +299,7 @@ def add_player():
             post_up_poet=post_up_poet,
             physical_finisher=physical_finisher,
             rebound_chaser=rebound_chaser,
+            rise_up=rise_up,
             set_shot_specialist=set_shot_specialist,
             shifty_shooter=shifty_shooter,
             slippery_off_ball=slippery_off_ball,
@@ -468,7 +470,7 @@ def upgrade_attribute():
         "immovable_enforcer", "interceptor", "layup_mixmaster", "lightning_launch", "limitless_range", 
         "mini_marksman", "off_ball_pest", "on_ball_menace", "paint_patroller", "paint_prodigy", "pick_dodger", 
         "pogo_stick", "posterizer", "post_fade_phenom", "post_lockdown", "post_powerhouse", "post_up_poet", 
-        "physical_finisher", "rebound_chaser", "set_shot_specialist", "shifty_shooter", "slippery_off_ball", 
+        "physical_finisher", "rebound_chaser", "rise_up", "set_shot_specialist", "shifty_shooter", "slippery_off_ball", 
         "strong_handle", "unpluckable", "versatile_visionary"
     ]
 
@@ -919,6 +921,7 @@ def target_settings():
         "post_up_poet", 
         "physical_finisher", 
         "rebound_chaser", 
+        "rise_up",
         "set_shot_specialist", 
         "shifty_shooter", 
         "slippery_off_ball", 

@@ -112,7 +112,7 @@ Welcome to the NBA 2K25 Player Progression Tracker! You can add new players to t
         <input type="number" name="vertical" id="vertical" value="{{ player_data['attributes']['vertical'] if player_data else 25 }}"><br>
 
         <!-- Badge Inputs -->
-        {% set badges = ['aerial_wizard', 'ankle_assassin', 'bail_out', 'boxout_beast', 'break_starter', 'brick_wall', 'challenger', 'deadeye', 'dimer', 'float_game', 'glove', 'handles_for_days', 'high_flying_denier', 'hook_specialist', 'immovable_enforcer', 'interceptor', 'layup_mixmaster', 'lightning_launch', 'limitless_range', 'mini_marksman', 'off_ball_pest', 'on_ball_menace', 'paint_patroller', 'paint_prodigy', 'pick_dodger', 'pogo_stick', 'posterizer', 'post_fade_phenom', 'post_lockdown', 'post_powerhouse', 'post_up_poet', 'physical_finisher', 'rebound_chaser', 'set_shot_specialist', 'shifty_shooter', 'slippery_off_ball', 'strong_handle', 'unpluckable', 'versatile_visionary'] %}
+        {% set badges = ['aerial_wizard', 'ankle_assassin', 'bail_out', 'boxout_beast', 'break_starter', 'brick_wall', 'challenger', 'deadeye', 'dimer', 'float_game', 'glove', 'handles_for_days', 'high_flying_denier', 'hook_specialist', 'immovable_enforcer', 'interceptor', 'layup_mixmaster', 'lightning_launch', 'limitless_range', 'mini_marksman', 'off_ball_pest', 'on_ball_menace', 'paint_patroller', 'paint_prodigy', 'pick_dodger', 'pogo_stick', 'posterizer', 'post_fade_phenom', 'post_lockdown', 'post_powerhouse', 'post_up_poet', 'physical_finisher', 'rebound_chaser', 'rise_up' 'set_shot_specialist', 'shifty_shooter', 'slippery_off_ball', 'strong_handle', 'unpluckable', 'versatile_visionary'] %}
 
         {% for badge in badges %}
             <label for="{{ badge }}">{{ badge.replace('_', ' ').title() }}:</label>
