@@ -434,7 +434,11 @@ def input_stats():
             badgepoints_earned += settings.champion_badge
 
         # Update player's points
-        player.devpoints += devpoints_earned + manual_devpoints
+        if
+            manual_devpoints > 0 :
+                devpoints_earned += manual_devpoints
+        
+        player.devpoints += devpoints_earned 
         player.badgepoints += badgepoints_earned
 
         db.session.commit()
