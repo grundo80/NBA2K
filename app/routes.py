@@ -336,6 +336,7 @@ def input_stats():
         assists = int(request.form.get("assists", 0))
         steals = int(request.form.get("steals", 0))
         blocks = int(request.form.get("blocks", 0))
+        manual_devpoints = int(request.form.get("manual_devpoints", 0))
 
         # Check for additional awards
         player_of_the_game = "player_of_the_game" in request.form
@@ -433,7 +434,7 @@ def input_stats():
             badgepoints_earned += settings.champion_badge
 
         # Update player's points
-        player.devpoints += devpoints_earned
+        player.devpoints += devpoints_earned + manual_devpoints
         player.badgepoints += badgepoints_earned
 
         db.session.commit()
