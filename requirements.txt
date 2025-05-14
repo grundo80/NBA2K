@@ -18,3 +18,4 @@ Requests==2.32.3
 SQLAlchemy==2.0.34
 Werkzeug
 gunicorn
+psycopg2-binary
