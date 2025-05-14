@@ -6,6 +6,8 @@ from datetime import timedelta
 import os
 from dotenv import load_dotenv
 
+
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -13,10 +15,11 @@ class Config:
     """
     This is the config class.
     """
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.environ.get("SECRET_KEY", "fallback_key")
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=60)
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
-    SQLALCHEMY_DATABASE_URI = "sqlite:///nba2k25.db"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
 
     # Login (Project B) environment variables
     LOGIN_CLIENT_ID = os.environ.get('LOGIN_CLIENT_ID')
