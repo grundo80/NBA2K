@@ -1,3 +1,5 @@
+
+#this is a copied version, attempting to add some features I like for my own playthrough 
 # NBA 2K25 Player Progression System
 
 ## About
