@@ -434,8 +434,7 @@ def input_stats():
             badgepoints_earned += settings.champion_badge
 
         # Update player's points
-        if
-            manual_devpoints > 0 :
+        if  manual_devpoints > 0 :
                 devpoints_earned += manual_devpoints
         
         player.devpoints += devpoints_earned 
