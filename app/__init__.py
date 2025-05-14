@@ -11,6 +11,8 @@ from flask_mail import Mail
 from app.config import Config
 
 app = Flask(__name__, static_url_path="/static", static_folder="../static")
+import os
+app.secret_key = os.environ.get('SECRET_KEY', 'fallback_key')
 app.config.from_object(Config)
 mail = Mail(app)
 db = SQLAlchemy(app)
