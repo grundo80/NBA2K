@@ -40,7 +40,9 @@ class Player(db.Model):
     # Development and badge points
     devpoints = db.Column(db.Integer, default=0)
     badgepoints = db.Column(db.Integer, default=0)
+    money = db.Column(db.Integer, default=0)
 
+    
     # Attributes (25 to 99)
     agility = db.Column(db.Integer, default=25)
     ball_handle = db.Column(db.Integer, default=25)
