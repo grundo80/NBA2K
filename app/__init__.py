@@ -43,3 +43,9 @@ def getattr_filter(obj, attr):
 
 from app.errors.handlers import errors
 app.register_blueprint(errors)
+
+from app.models import User
+
+with app.app_context():
+    db.create_all()
+
