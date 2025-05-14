@@ -47,5 +47,6 @@ app.register_blueprint(errors)
 from app.models import User
 
 with app.app_context():
+    from app.models import db 
     db.create_all()
 
