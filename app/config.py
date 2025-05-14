@@ -19,7 +19,7 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "fallback_key")
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=60)
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
     # Login (Project B) environment variables
     LOGIN_CLIENT_ID = os.environ.get('LOGIN_CLIENT_ID')
