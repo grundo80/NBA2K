@@ -360,6 +360,11 @@ def input_stats():
             blocks >= 10,
         ]
 
+        #track money earned
+        money_input = request.form.get("money")
+        if money_input is not None:
+            player.money = int(money_input)
+    
         # Rebounds and assists points
         if sum(double_double_stats) <= 1:
             if rebounds >= 10 and rebounds < 20:
