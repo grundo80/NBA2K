@@ -444,7 +444,7 @@ def input_stats():
         
         player.devpoints += devpoints_earned 
         player.badgepoints += badgepoints_earned
-
+        player.money = int(money_input)
         db.session.commit()
 
         flash(
