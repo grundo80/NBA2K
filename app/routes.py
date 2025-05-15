@@ -448,7 +448,7 @@ def input_stats():
         db.session.commit()
 
         flash(
-            f"Success! {devpoints_earned} development points and {badgepoints_earned} badge points awarded.",
+            f"Success! {devpoints_earned} development points and {badgepoints_earned} badge points awarded and {money} earned.",
             "success"
         )
         return redirect(url_for("input_stats"))
